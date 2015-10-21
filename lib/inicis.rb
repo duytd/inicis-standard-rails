@@ -1,3 +1,0 @@
-class Inicis
-
-end
