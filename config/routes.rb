@@ -1,4 +1,6 @@
 Inicis::Standard::Rails::Engine.routes.draw do
-  get "pay/close", to: "pay#close"
-  get "pay/popup", to: "pay#popup"
+  get "transaction/close", to: "transaction#close", as: "transaction_close"
+  get "transaction/popup", to: "transaction#popup", as: "transaction_popup"
+  get "transaction/pay", to: "transaction#pay", as: "transaction_pay"
+  get "transaction/callback", to: "transaction#callback", as: "transaction_callback"
 end

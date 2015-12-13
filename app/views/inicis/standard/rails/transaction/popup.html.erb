@@ -1,0 +1,7 @@
+<% content_for :inicis_javascript do %>
+  <% if Rails.env.development? %>
+    <%= javascript_include_tag "inicis_standard/inicis_standard_popup" %>
+  <% else %>
+    <%= javascript_include_tag "https://stdpay.inicis.com/stdjs/INIStdPay_popup.js" %>
+  <% end %>
+<% end %>
