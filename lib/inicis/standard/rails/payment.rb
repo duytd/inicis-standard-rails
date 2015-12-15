@@ -5,6 +5,8 @@ module Inicis
   module Standard
     module Rails
       class Payment
+        include ActionView::Helpers::NumberHelper
+
         def initialize options={}
           jars = Dir.glob("#{File.dirname(__FILE__)}/java/*.jar").join ":"
           Rjb.load jars, ["-Xmx512M"]
@@ -25,8 +27,8 @@ module Inicis
           @pay_view_type = "overlay"
 
           sign_params = hash_map.new
-          sign_params.put "oid", @order[:id]
-          sign_params.put "price", @order[:price].to_s
+          sign_params.put "oid", @order[:id].to_s
+          sign_params.put "price", number_with_precision(@order[:price], precision: 0, delimiter: "")
           sign_params.put "timestamp", @timestamp
 
           @signature = signature_util.makeSignature sign_params

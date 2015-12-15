@@ -9,7 +9,7 @@ module Inicis
           Rjb.load jars, ["-Xmx512M"]
 
           @hash_map = Rjb::import "java.util.HashMap"
-          @hash_table = Rjb::import "java.util.HashTable"
+          @hash_table = Rjb::import "java.util.Hashtable"
           @signature_util = Rjb::import "com.inicis.std.util.SignatureUtil"
           @http_util = Rjb::import "com.inicis.std.util.HttpUtil"
           @parse_util = Rjb::import "com.inicis.std.util.ParseUtil"

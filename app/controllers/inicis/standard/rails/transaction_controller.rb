@@ -4,17 +4,25 @@ require "inicis/standard/rails/authentication"
 module Inicis
   module Standard
     module Rails
-      class TransactionController < ::ApplicationController
+      class TransactionController < Inicis::Standard::Rails.configuration.parent_klass
+        protect_from_forgery with: :null_session
         before_action :load_logger
+
         def pay
-          # order = {
-          #   id: "order_1",
-          #   goods_name: "Good Name",
-          #   buyer_name: "Buyer Name",
-          #   buyer_email: "buyer@shopstory.co.kr",
-          #   buyer_phone: "0123456789",
-          #   price: 10000
-          # }
+          if cart_token = cookies[:cart]
+            order = Order.find_by_token cart_token
+          else
+            redirect_to main_app.root_path
+          end
+
+          order = {
+            id: order.id,
+            goods_name: order.order_products.inject(""){|str, x| str + x.product.name + ","},
+            buyer_name: order.shipping_address.first_name + order.shipping_address.last_name,
+            buyer_email: order.shipping_address.email,
+            buyer_phone: order.shipping_address.phone_number,
+            price: order.subtotal
+          }
 
           inicis_payment = Inicis::Standard::Rails::Payment.new order: order
           @request_payload = inicis_payment.generate_payload
