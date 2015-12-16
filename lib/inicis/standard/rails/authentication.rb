@@ -6,7 +6,7 @@ module Inicis
       class Authentication
         def initialize
           jars = Dir.glob("#{File.dirname(__FILE__)}/java/*.jar").join ":"
-          Rjb.load jars, ["-Xmx512M"]
+          Rjb.load jars, ["-Xms128M", "-Xmx512M"]
 
           @hash_map = Rjb::import "java.util.HashMap"
           @hash_table = Rjb::import "java.util.Hashtable"

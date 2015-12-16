@@ -9,7 +9,7 @@ module Inicis
 
         def initialize options={}
           jars = Dir.glob("#{File.dirname(__FILE__)}/java/*.jar").join ":"
-          Rjb.load jars, ["-Xmx512M"]
+          Rjb.load jars, ["-Xms128M", "-Xmx512M"]
 
           date_format = Rjb::import "java.text.SimpleDateFormat"
           signature_util = Rjb::import "com.inicis.std.util.SignatureUtil"
