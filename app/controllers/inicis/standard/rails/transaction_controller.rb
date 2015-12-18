@@ -54,8 +54,7 @@ module Inicis
 
             if approvement
               @logger.info "Payment is approved successfully"
-              #To_do: save_transaction
-              #To_do: success
+              success
             else
               @logger.debug "Failed to approve payment"
               failure "Approvement Failed !"
@@ -66,12 +65,29 @@ module Inicis
           end
         end
 
+        def vbank_noti
+        end
+
+        def cancel
+        end
+
+        def mobi_next
+        end
+
+        def mobi_noti
+        end
+
+        def mobi_return
+        end
+
         def failure message
           flash[:danger] = message
           render :pay
         end
 
         def success
+          flash[:success] = "Successful"
+          render :pay
         end
 
         private

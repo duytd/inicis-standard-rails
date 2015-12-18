@@ -11,10 +11,11 @@ module Inicis
       end
 
       class Configuration
-        attr_accessor :parent_klass
+        attr_accessor :parent_klass, :thrift_server
 
         def initialize
           @parent_klass = ::ApplicationController
+          @thrift_server = "http://localhost:9090"
         end
       end
     end
