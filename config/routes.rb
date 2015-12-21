@@ -3,4 +3,5 @@ Inicis::Standard::Rails::Engine.routes.draw do
   get "transaction/popup", to: "transaction#popup", as: "transaction_popup"
   get "transaction/pay", to: "transaction#pay", as: "transaction_pay"
   post "transaction/callback", to: "transaction#callback", as: "transaction_callback"
+  post "transaction/vbank_noti", to: "transaction#vbank_noti", as: "transaction_vbank_noti"
 end

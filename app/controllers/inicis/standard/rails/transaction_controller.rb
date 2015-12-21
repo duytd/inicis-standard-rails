@@ -66,6 +66,84 @@ module Inicis
         end
 
         def vbank_noti
+        @logger.info "Virtual Bank notification from Inicis:"
+        @logger.debug params
+
+        temp_ip =request.remote_ip
+        pg_ip = temp_ip[0, 10]
+
+        @logger.info "Receiving noti from IP: #{pg_ip}"
+
+        if pg_ip == "181.224.15" || pg_ip == "210.98.138"
+          no_oid = params[:no_oid]
+          no_tid = params[:no_tid]
+          no_vacct = params[:no_vacct]
+          cd_bank = params[:cd_bank]
+          amt_input = params[:amt_input]
+
+          order = Order.find no_oid
+
+          state = order->getState();
+          data = order->getPayment()->getData("additional_data");
+          data = Mage::helper("core")->jsonDecode(data);
+
+            txnid = data["txnid"];
+            VACT_BankCode = data["VACT_BankCode"];
+            VACT_Num = data["VACT_Num"];
+            totalPrice = data["totalPrice"];
+
+            Mage::log("Additional Payment Data:", null, "Inicis.log");
+            Mage::log(data, null, "Inicis.log");
+
+            if (state == Mage_Sales_Model_Order::STATE_NEW || state == Mage_Sales_Model_Order::STATE_PENDING_PAYMENT) {
+                if(txnid != no_oid) {
+                    Mage::log("Failed: Order ID not matched", null, "Inicis.log");
+                    echo "FAIL_11";
+                    exit();
+                }
+
+                if(VACT_BankCode != cd_bank) {
+                    Mage::log("Failed: BankCode not matched", null, "Inicis.log");
+                    echo "FAIL_12";
+                    exit();
+                }
+
+                if(VACT_Num != no_vacct) {
+                    Mage::log("Failed: Bank Number not matched", null, "Inicis.log");
+                    echo "FAIL_13";
+                    exit();
+                }
+
+                if((int)totalPrice != (int)amt_input) {
+                    Mage::log("Failed: Price not matched", null, "Inicis.log");
+                    echo "FAIL_14";
+                    exit();
+                }
+
+                this->_createInvoice(order, true);
+                msg = "Payment completed via INIPay with Virtual Bank.";
+
+                order.change_status "processed"
+                order.change_payment_status "paid"
+
+                payment = order->getPayment();
+                payment->setTransactionId(no_tid);
+                transaction = payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE, null, false, false);
+                transaction->setIsClosed(0);
+                transaction->save();
+                order->save();
+
+                Mage::log("Completed Virtual Bank payment", null, "Inicis.log");
+                echo "OK";
+                exit();
+            }
+            else {
+                Mage::log("Failed: Order had already been processed", null, "Inicis.log");
+                echo "FAIL_20";
+                exit();
+            }
+        }
+    }
         end
 
         def cancel
@@ -82,12 +160,10 @@ module Inicis
 
         def failure message
           flash[:danger] = message
-          render :pay
         end
 
         def success
           flash[:success] = "Successful"
-          render :pay
         end
 
         private

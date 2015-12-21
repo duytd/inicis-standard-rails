@@ -1,0 +1,2 @@
+class InicisPayment < PaymentMethod
+end
