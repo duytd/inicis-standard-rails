@@ -40,11 +40,11 @@ module Inicis
               if result_hash["resultCode"] == "0000"
                 check_hash = {
                   "mid" => data[:mid],
-                  "authToken" => data[:token],
-                  "signature" => signature,
-                  "timestamp" => client.getTimestamp,
+                  "tid" => result_hash[:tid],
                   "applDate" => result_hash[:applDate],
                   "applTime" => result_hash[:applTime],
+                  "price" => result_hash[:TotPrice],
+                  "goodsName" => result_hash["goodsname"],
                   "charset" => "UTF-8",
                   "format" => "JSON"
                 }
