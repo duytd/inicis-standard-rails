@@ -12,12 +12,12 @@ module Inicis
         include ActionView::Helpers::NumberHelper
 
         def initialize options={}
-            @sign_key = "SU5JTElURV9UUklQTEVERVNfS0VZU1RS"
+            @sign_key = options[:sign_key]
             @order = options[:order]
-            @merchant_id = "INIpayTest"
-            @accept_method = "HPP(1):Card(0):OCB:receipt:cardpoint"
-            @gopay_method = "Card:DirectBank:VBank:useescrow"
-            @pay_view_type = "overlay"
+            @merchant_id = options[:merchant_id]
+            @accept_method = options[:accept_method]
+            @gopay_method = options[:gopay_method]
+            @pay_view_type = options[:pay_view_type]
         end
 
         def generate_payload mobile=false

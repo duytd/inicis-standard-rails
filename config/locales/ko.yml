@@ -1,0 +1,12 @@
+ko:
+  inicis:
+    failure: Oops something wrong happens. Please try again later
+    methods:
+      vbank:
+        account_number: Account Number
+        bank_name: Bank Name
+        account_holder_name: Account Holder Name
+        sender_name: Sender Name
+        amount: Amount
+        wire_transfer_date: Wire Transfer Date
+        wire_transfer_time: Wire Transfer Time

@@ -8,9 +8,9 @@ require "json"
 module Inicis
   module Standard
     module Rails
-      class Authentication
-        def approve data
-          @logger ||= Logger.new "#{::Rails.root}/log/inicis.log"
+      class Authorization
+        def authorize data
+          @logger ||= Logger.new "#{::Rails.root}/log/inicis/pc.log"
 
           begin
             transport = Thrift::BufferedTransport.new Thrift::HTTPClientTransport.new(Inicis::Standard::Rails.configuration.thrift_server)
@@ -22,7 +22,7 @@ module Inicis
             signature = client.makePaymentAproveSignature data[:token], timestamp
 
             hash = {
-              "mid" => "INIpayTest",
+              "mid" => data[:mid],
               "authToken" => data[:token],
               "signature" => signature,
               "timestamp" => timestamp,
@@ -39,15 +39,17 @@ module Inicis
 
               if result_hash["resultCode"] == "0000"
                 check_hash = {
-                  "mid" => data[:mid],
-                  "tid" => result_hash[:tid],
-                  "applDate" => result_hash[:applDate],
-                  "applTime" => result_hash[:applTime],
-                  "price" => result_hash[:TotPrice],
-                  "goodsName" => result_hash["goodsname"],
+                  "mid" => result_hash["mid"],
+                  "tid" => result_hash["tid"],
+                  "applDate" => result_hash["applDate"],
+                  "applTime" => result_hash["applTime"],
+                  "price" => result_hash["TotPrice"],
+                  "goodsName" => result_hash["goodsName"],
                   "charset" => "UTF-8",
                   "format" => "JSON"
                 }
+
+                @logger.info "Payment is authorized successfully"
 
                 ack_result_str = client.getAuthenticationResult check_hash, data[:ack_url]
                 ackMap = JSON.parse ack_result_str
@@ -55,6 +57,8 @@ module Inicis
                 transport.close
 
                 return result_hash
+              else
+                @logger.info "Failed to authorize payment. Code: #{result_hash['resultCode']}. Message: #{result_hash['resultMsg']}"
               end
             end
 

@@ -41,7 +41,7 @@ namespace :inicis do
         option_type: "text"
       },
       {
-        name: "pay_view_option_type",
+        name: "pay_view_type",
         title: "Pay View Type (popup | overlay)",
         default_value: "overlay",
         option_type: "text"
