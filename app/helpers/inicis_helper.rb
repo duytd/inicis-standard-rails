@@ -1,0 +1,15 @@
+module InicisHelper
+  def inicis_order
+    cart_token = cookies[:cart]
+    order ||= Order.find_by_token cart_token
+    @inicis_order ||= {
+      id: order.id,
+      goods_name: order.order_products.inject(""){|str, x| str + x.product.name + ","},
+      buyer_name: order.shipping_address.first_name + order.shipping_address.last_name.to_s,
+      buyer_email: order.shipping_address.email,
+      buyer_phone: order.shipping_address.phone_number,
+      price: order.total,
+      submethod: order.payment.submethod
+    }
+  end
+end

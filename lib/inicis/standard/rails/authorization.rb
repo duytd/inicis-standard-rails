@@ -68,6 +68,34 @@ module Inicis
 
           nil
         end
+
+        def authorize_mobile data
+          @logger ||= Logger.new "#{::Rails.root}/log/inicis/mobile.log"
+          begin
+            transport = Thrift::BufferedTransport.new Thrift::HTTPClientTransport.new(Inicis::Standard::Rails.configuration.thrift_server)
+            protocol = Thrift::BinaryProtocol.new transport
+            client = Inicis::Client.new protocol
+            transport.open
+
+            result_str = client.getMobileAuthenticationResult data[:inipayhome], data[:mid],
+              data[:p_rmesg1], data[:p_tid], data[:p_status], data[:p_req_url], data[:p_noti]
+
+            transport.close
+
+            @logger.debug result_str
+            result_hash = JSON.parse result_str
+
+            if result_hash["m_resultCode"] == "00"
+              return result_hash
+            else
+              @logger.info "Failed to authorize payment. Code: #{result_hash['m_resultCode']}. Message: #{result_hash['m_resultMsg']}"
+            end
+          rescue Thrift::Exception => tx
+            print "Thrift::Exception: ", tx.message, "\n"
+          end
+
+          nil
+        end
       end
     end
   end

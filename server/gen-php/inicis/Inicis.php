@@ -45,6 +45,31 @@ interface InicisIf {
    * @return string
    */
   public function getAuthenticationResult(array $data, $url);
+  /**
+   * @param string $inipayhome
+   * @param string $mid
+   * @param string $p_rmesg1
+   * @param string $p_tid
+   * @param string $p_status
+   * @param string $p_req_url
+   * @param string $p_noti
+   * @return string
+   */
+  public function getMobileAuthenticationResult($inipayhome, $mid, $p_rmesg1, $p_tid, $p_status, $p_req_url, $p_noti);
+  /**
+   * @param string $key
+   * @param string $data
+   * @param string $iv
+   * @return string
+   */
+  public function aes256_cbc_encrypt($key, $data, $iv);
+  /**
+   * @param string $key
+   * @param string $data
+   * @param string $iv
+   * @return string
+   */
+  public function aes256_cbc_decrypt($key, $data, $iv);
 }
 
 class InicisClient implements \inicis\InicisIf {
@@ -314,6 +339,169 @@ class InicisClient implements \inicis\InicisIf {
       return $result->success;
     }
     throw new \Exception("getAuthenticationResult failed: unknown result");
+  }
+
+  public function getMobileAuthenticationResult($inipayhome, $mid, $p_rmesg1, $p_tid, $p_status, $p_req_url, $p_noti)
+  {
+    $this->send_getMobileAuthenticationResult($inipayhome, $mid, $p_rmesg1, $p_tid, $p_status, $p_req_url, $p_noti);
+    return $this->recv_getMobileAuthenticationResult();
+  }
+
+  public function send_getMobileAuthenticationResult($inipayhome, $mid, $p_rmesg1, $p_tid, $p_status, $p_req_url, $p_noti)
+  {
+    $args = new \inicis\Inicis_getMobileAuthenticationResult_args();
+    $args->inipayhome = $inipayhome;
+    $args->mid = $mid;
+    $args->p_rmesg1 = $p_rmesg1;
+    $args->p_tid = $p_tid;
+    $args->p_status = $p_status;
+    $args->p_req_url = $p_req_url;
+    $args->p_noti = $p_noti;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'getMobileAuthenticationResult', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('getMobileAuthenticationResult', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_getMobileAuthenticationResult()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\inicis\Inicis_getMobileAuthenticationResult_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \inicis\Inicis_getMobileAuthenticationResult_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("getMobileAuthenticationResult failed: unknown result");
+  }
+
+  public function aes256_cbc_encrypt($key, $data, $iv)
+  {
+    $this->send_aes256_cbc_encrypt($key, $data, $iv);
+    return $this->recv_aes256_cbc_encrypt();
+  }
+
+  public function send_aes256_cbc_encrypt($key, $data, $iv)
+  {
+    $args = new \inicis\Inicis_aes256_cbc_encrypt_args();
+    $args->key = $key;
+    $args->data = $data;
+    $args->iv = $iv;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'aes256_cbc_encrypt', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('aes256_cbc_encrypt', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_aes256_cbc_encrypt()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\inicis\Inicis_aes256_cbc_encrypt_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \inicis\Inicis_aes256_cbc_encrypt_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("aes256_cbc_encrypt failed: unknown result");
+  }
+
+  public function aes256_cbc_decrypt($key, $data, $iv)
+  {
+    $this->send_aes256_cbc_decrypt($key, $data, $iv);
+    return $this->recv_aes256_cbc_decrypt();
+  }
+
+  public function send_aes256_cbc_decrypt($key, $data, $iv)
+  {
+    $args = new \inicis\Inicis_aes256_cbc_decrypt_args();
+    $args->key = $key;
+    $args->data = $data;
+    $args->iv = $iv;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'aes256_cbc_decrypt', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('aes256_cbc_decrypt', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_aes256_cbc_decrypt()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\inicis\Inicis_aes256_cbc_decrypt_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \inicis\Inicis_aes256_cbc_decrypt_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("aes256_cbc_decrypt failed: unknown result");
   }
 
 }
@@ -1171,6 +1359,686 @@ class Inicis_getAuthenticationResult_result {
 
 }
 
+class Inicis_getMobileAuthenticationResult_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $inipayhome = null;
+  /**
+   * @var string
+   */
+  public $mid = null;
+  /**
+   * @var string
+   */
+  public $p_rmesg1 = null;
+  /**
+   * @var string
+   */
+  public $p_tid = null;
+  /**
+   * @var string
+   */
+  public $p_status = null;
+  /**
+   * @var string
+   */
+  public $p_req_url = null;
+  /**
+   * @var string
+   */
+  public $p_noti = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'inipayhome',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'mid',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'p_rmesg1',
+          'type' => TType::STRING,
+          ),
+        4 => array(
+          'var' => 'p_tid',
+          'type' => TType::STRING,
+          ),
+        5 => array(
+          'var' => 'p_status',
+          'type' => TType::STRING,
+          ),
+        6 => array(
+          'var' => 'p_req_url',
+          'type' => TType::STRING,
+          ),
+        7 => array(
+          'var' => 'p_noti',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['inipayhome'])) {
+        $this->inipayhome = $vals['inipayhome'];
+      }
+      if (isset($vals['mid'])) {
+        $this->mid = $vals['mid'];
+      }
+      if (isset($vals['p_rmesg1'])) {
+        $this->p_rmesg1 = $vals['p_rmesg1'];
+      }
+      if (isset($vals['p_tid'])) {
+        $this->p_tid = $vals['p_tid'];
+      }
+      if (isset($vals['p_status'])) {
+        $this->p_status = $vals['p_status'];
+      }
+      if (isset($vals['p_req_url'])) {
+        $this->p_req_url = $vals['p_req_url'];
+      }
+      if (isset($vals['p_noti'])) {
+        $this->p_noti = $vals['p_noti'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'Inicis_getMobileAuthenticationResult_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->inipayhome);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->mid);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->p_rmesg1);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->p_tid);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 5:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->p_status);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 6:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->p_req_url);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 7:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->p_noti);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('Inicis_getMobileAuthenticationResult_args');
+    if ($this->inipayhome !== null) {
+      $xfer += $output->writeFieldBegin('inipayhome', TType::STRING, 1);
+      $xfer += $output->writeString($this->inipayhome);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->mid !== null) {
+      $xfer += $output->writeFieldBegin('mid', TType::STRING, 2);
+      $xfer += $output->writeString($this->mid);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->p_rmesg1 !== null) {
+      $xfer += $output->writeFieldBegin('p_rmesg1', TType::STRING, 3);
+      $xfer += $output->writeString($this->p_rmesg1);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->p_tid !== null) {
+      $xfer += $output->writeFieldBegin('p_tid', TType::STRING, 4);
+      $xfer += $output->writeString($this->p_tid);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->p_status !== null) {
+      $xfer += $output->writeFieldBegin('p_status', TType::STRING, 5);
+      $xfer += $output->writeString($this->p_status);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->p_req_url !== null) {
+      $xfer += $output->writeFieldBegin('p_req_url', TType::STRING, 6);
+      $xfer += $output->writeString($this->p_req_url);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->p_noti !== null) {
+      $xfer += $output->writeFieldBegin('p_noti', TType::STRING, 7);
+      $xfer += $output->writeString($this->p_noti);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class Inicis_getMobileAuthenticationResult_result {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $success = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'Inicis_getMobileAuthenticationResult_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->success);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('Inicis_getMobileAuthenticationResult_result');
+    if ($this->success !== null) {
+      $xfer += $output->writeFieldBegin('success', TType::STRING, 0);
+      $xfer += $output->writeString($this->success);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class Inicis_aes256_cbc_encrypt_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $key = null;
+  /**
+   * @var string
+   */
+  public $data = null;
+  /**
+   * @var string
+   */
+  public $iv = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'key',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'data',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'iv',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['key'])) {
+        $this->key = $vals['key'];
+      }
+      if (isset($vals['data'])) {
+        $this->data = $vals['data'];
+      }
+      if (isset($vals['iv'])) {
+        $this->iv = $vals['iv'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'Inicis_aes256_cbc_encrypt_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->key);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->data);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->iv);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('Inicis_aes256_cbc_encrypt_args');
+    if ($this->key !== null) {
+      $xfer += $output->writeFieldBegin('key', TType::STRING, 1);
+      $xfer += $output->writeString($this->key);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->data !== null) {
+      $xfer += $output->writeFieldBegin('data', TType::STRING, 2);
+      $xfer += $output->writeString($this->data);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->iv !== null) {
+      $xfer += $output->writeFieldBegin('iv', TType::STRING, 3);
+      $xfer += $output->writeString($this->iv);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class Inicis_aes256_cbc_encrypt_result {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $success = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'Inicis_aes256_cbc_encrypt_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->success);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('Inicis_aes256_cbc_encrypt_result');
+    if ($this->success !== null) {
+      $xfer += $output->writeFieldBegin('success', TType::STRING, 0);
+      $xfer += $output->writeString($this->success);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class Inicis_aes256_cbc_decrypt_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $key = null;
+  /**
+   * @var string
+   */
+  public $data = null;
+  /**
+   * @var string
+   */
+  public $iv = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'key',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'data',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'iv',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['key'])) {
+        $this->key = $vals['key'];
+      }
+      if (isset($vals['data'])) {
+        $this->data = $vals['data'];
+      }
+      if (isset($vals['iv'])) {
+        $this->iv = $vals['iv'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'Inicis_aes256_cbc_decrypt_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->key);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->data);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->iv);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('Inicis_aes256_cbc_decrypt_args');
+    if ($this->key !== null) {
+      $xfer += $output->writeFieldBegin('key', TType::STRING, 1);
+      $xfer += $output->writeString($this->key);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->data !== null) {
+      $xfer += $output->writeFieldBegin('data', TType::STRING, 2);
+      $xfer += $output->writeString($this->data);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->iv !== null) {
+      $xfer += $output->writeFieldBegin('iv', TType::STRING, 3);
+      $xfer += $output->writeString($this->iv);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class Inicis_aes256_cbc_decrypt_result {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $success = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'Inicis_aes256_cbc_decrypt_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->success);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('Inicis_aes256_cbc_decrypt_result');
+    if ($this->success !== null) {
+      $xfer += $output->writeFieldBegin('success', TType::STRING, 0);
+      $xfer += $output->writeString($this->success);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
 class InicisProcessor {
   protected $handler_ = null;
   public function __construct($handler) {
@@ -1288,6 +2156,63 @@ class InicisProcessor {
     else
     {
       $output->writeMessageBegin('getAuthenticationResult', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_getMobileAuthenticationResult($seqid, $input, $output) {
+    $args = new \inicis\Inicis_getMobileAuthenticationResult_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \inicis\Inicis_getMobileAuthenticationResult_result();
+    $result->success = $this->handler_->getMobileAuthenticationResult($args->inipayhome, $args->mid, $args->p_rmesg1, $args->p_tid, $args->p_status, $args->p_req_url, $args->p_noti);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'getMobileAuthenticationResult', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('getMobileAuthenticationResult', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_aes256_cbc_encrypt($seqid, $input, $output) {
+    $args = new \inicis\Inicis_aes256_cbc_encrypt_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \inicis\Inicis_aes256_cbc_encrypt_result();
+    $result->success = $this->handler_->aes256_cbc_encrypt($args->key, $args->data, $args->iv);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'aes256_cbc_encrypt', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('aes256_cbc_encrypt', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_aes256_cbc_decrypt($seqid, $input, $output) {
+    $args = new \inicis\Inicis_aes256_cbc_decrypt_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \inicis\Inicis_aes256_cbc_decrypt_result();
+    $result->success = $this->handler_->aes256_cbc_decrypt($args->key, $args->data, $args->iv);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'aes256_cbc_decrypt', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('aes256_cbc_decrypt', TMessageType::REPLY, $seqid);
       $result->write($output);
       $output->writeMessageEnd();
       $output->getTransport()->flush();

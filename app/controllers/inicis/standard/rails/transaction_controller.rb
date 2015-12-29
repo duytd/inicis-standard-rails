@@ -7,18 +7,10 @@ module Inicis
       class TransactionController < Inicis::Standard::Rails.configuration.parent_klass
         protect_from_forgery with: :null_session
         before_action :load_logger
-        before_action :load_order, only: :pay
+
+        include InicisHelper
 
         def pay
-          order = {
-            id: @order.id,
-            goods_name: @order.order_products.inject(""){|str, x| str + x.product.name + ","},
-            buyer_name: @order.shipping_address.first_name + @order.shipping_address.last_name.to_s,
-            buyer_email: @order.shipping_address.email,
-            buyer_phone: @order.shipping_address.phone_number,
-            price: @order.total
-          }
-
           payment_method_shop = current_shop.payment_method_shops.find_by_payment_method_id InicisPayment.first.id
           inipayhome = File.dirname payment_method_shop.key.url
           sign_key = payment_method_shop.load_option "sign_key"
@@ -28,7 +20,7 @@ module Inicis
           pay_view_type = payment_method_shop.load_option "pay_view_type"
 
           inicis_payment = Inicis::Standard::Rails::Payment.new(
-            order: order,
+            order: inicis_order,
             inipayhome: inipayhome,
             sign_key: sign_key,
             merchant_id: merchant_id,
@@ -95,6 +87,9 @@ module Inicis
           end
         end
 
+        def cancel
+        end
+
         def vbank_noti
           @logger.info "Virtual Bank notification from Inicis:"
           @logger.debug params
@@ -143,20 +138,9 @@ module Inicis
           flash[:danger] = t "inicis.failure"
         end
 
-        def cancel
-        end
-
         private
         def load_logger
           @logger ||= Logger.new "#{::Rails.root}/log/inicis/pc.log"
-        end
-
-        def load_order
-          if cart_token = cookies[:cart]
-            @order = Order.find_by_token cart_token
-          else
-            redirect_to main_app.root_path
-          end
         end
       end
     end

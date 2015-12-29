@@ -86,6 +86,51 @@ module Inicis
       raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'getAuthenticationResult failed: unknown result')
     end
 
+    def getMobileAuthenticationResult(inipayhome, mid, p_rmesg1, p_tid, p_status, p_req_url, p_noti)
+      send_getMobileAuthenticationResult(inipayhome, mid, p_rmesg1, p_tid, p_status, p_req_url, p_noti)
+      return recv_getMobileAuthenticationResult()
+    end
+
+    def send_getMobileAuthenticationResult(inipayhome, mid, p_rmesg1, p_tid, p_status, p_req_url, p_noti)
+      send_message('getMobileAuthenticationResult', GetMobileAuthenticationResult_args, :inipayhome => inipayhome, :mid => mid, :p_rmesg1 => p_rmesg1, :p_tid => p_tid, :p_status => p_status, :p_req_url => p_req_url, :p_noti => p_noti)
+    end
+
+    def recv_getMobileAuthenticationResult()
+      result = receive_message(GetMobileAuthenticationResult_result)
+      return result.success unless result.success.nil?
+      raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'getMobileAuthenticationResult failed: unknown result')
+    end
+
+    def aes256_cbc_encrypt(key, data, iv)
+      send_aes256_cbc_encrypt(key, data, iv)
+      return recv_aes256_cbc_encrypt()
+    end
+
+    def send_aes256_cbc_encrypt(key, data, iv)
+      send_message('aes256_cbc_encrypt', Aes256_cbc_encrypt_args, :key => key, :data => data, :iv => iv)
+    end
+
+    def recv_aes256_cbc_encrypt()
+      result = receive_message(Aes256_cbc_encrypt_result)
+      return result.success unless result.success.nil?
+      raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'aes256_cbc_encrypt failed: unknown result')
+    end
+
+    def aes256_cbc_decrypt(key, data, iv)
+      send_aes256_cbc_decrypt(key, data, iv)
+      return recv_aes256_cbc_decrypt()
+    end
+
+    def send_aes256_cbc_decrypt(key, data, iv)
+      send_message('aes256_cbc_decrypt', Aes256_cbc_decrypt_args, :key => key, :data => data, :iv => iv)
+    end
+
+    def recv_aes256_cbc_decrypt()
+      result = receive_message(Aes256_cbc_decrypt_result)
+      return result.success unless result.success.nil?
+      raise ::Thrift::ApplicationException.new(::Thrift::ApplicationException::MISSING_RESULT, 'aes256_cbc_decrypt failed: unknown result')
+    end
+
   end
 
   class Processor
@@ -124,6 +169,27 @@ module Inicis
       result = GetAuthenticationResult_result.new()
       result.success = @handler.getAuthenticationResult(args.data, args.url)
       write_result(result, oprot, 'getAuthenticationResult', seqid)
+    end
+
+    def process_getMobileAuthenticationResult(seqid, iprot, oprot)
+      args = read_args(iprot, GetMobileAuthenticationResult_args)
+      result = GetMobileAuthenticationResult_result.new()
+      result.success = @handler.getMobileAuthenticationResult(args.inipayhome, args.mid, args.p_rmesg1, args.p_tid, args.p_status, args.p_req_url, args.p_noti)
+      write_result(result, oprot, 'getMobileAuthenticationResult', seqid)
+    end
+
+    def process_aes256_cbc_encrypt(seqid, iprot, oprot)
+      args = read_args(iprot, Aes256_cbc_encrypt_args)
+      result = Aes256_cbc_encrypt_result.new()
+      result.success = @handler.aes256_cbc_encrypt(args.key, args.data, args.iv)
+      write_result(result, oprot, 'aes256_cbc_encrypt', seqid)
+    end
+
+    def process_aes256_cbc_decrypt(seqid, iprot, oprot)
+      args = read_args(iprot, Aes256_cbc_decrypt_args)
+      result = Aes256_cbc_decrypt_result.new()
+      result.success = @handler.aes256_cbc_decrypt(args.key, args.data, args.iv)
+      write_result(result, oprot, 'aes256_cbc_decrypt', seqid)
     end
 
   end
@@ -282,6 +348,122 @@ module Inicis
   end
 
   class GetAuthenticationResult_result
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    SUCCESS = 0
+
+    FIELDS = {
+      SUCCESS => {:type => ::Thrift::Types::STRING, :name => 'success'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class GetMobileAuthenticationResult_args
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    INIPAYHOME = 1
+    MID = 2
+    P_RMESG1 = 3
+    P_TID = 4
+    P_STATUS = 5
+    P_REQ_URL = 6
+    P_NOTI = 7
+
+    FIELDS = {
+      INIPAYHOME => {:type => ::Thrift::Types::STRING, :name => 'inipayhome'},
+      MID => {:type => ::Thrift::Types::STRING, :name => 'mid'},
+      P_RMESG1 => {:type => ::Thrift::Types::STRING, :name => 'p_rmesg1'},
+      P_TID => {:type => ::Thrift::Types::STRING, :name => 'p_tid'},
+      P_STATUS => {:type => ::Thrift::Types::STRING, :name => 'p_status'},
+      P_REQ_URL => {:type => ::Thrift::Types::STRING, :name => 'p_req_url'},
+      P_NOTI => {:type => ::Thrift::Types::STRING, :name => 'p_noti'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class GetMobileAuthenticationResult_result
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    SUCCESS = 0
+
+    FIELDS = {
+      SUCCESS => {:type => ::Thrift::Types::STRING, :name => 'success'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Aes256_cbc_encrypt_args
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    KEY = 1
+    DATA = 2
+    IV = 3
+
+    FIELDS = {
+      KEY => {:type => ::Thrift::Types::STRING, :name => 'key'},
+      DATA => {:type => ::Thrift::Types::STRING, :name => 'data'},
+      IV => {:type => ::Thrift::Types::STRING, :name => 'iv'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Aes256_cbc_encrypt_result
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    SUCCESS = 0
+
+    FIELDS = {
+      SUCCESS => {:type => ::Thrift::Types::STRING, :name => 'success'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Aes256_cbc_decrypt_args
+    include ::Thrift::Struct, ::Thrift::Struct_Union
+    KEY = 1
+    DATA = 2
+    IV = 3
+
+    FIELDS = {
+      KEY => {:type => ::Thrift::Types::STRING, :name => 'key'},
+      DATA => {:type => ::Thrift::Types::STRING, :name => 'data'},
+      IV => {:type => ::Thrift::Types::STRING, :name => 'iv'}
+    }
+
+    def struct_fields; FIELDS; end
+
+    def validate
+    end
+
+    ::Thrift::Struct.generate_accessors self
+  end
+
+  class Aes256_cbc_decrypt_result
     include ::Thrift::Struct, ::Thrift::Struct_Union
     SUCCESS = 0
 

@@ -3,11 +3,8 @@
 extract($_POST);
 
 extract($_GET);
-
 require("HttpClient.php");
 
-define (HOST_IP, $host);
-define (PAY_URL, $path);
 define (VERSION, "(V1000B20111219PHP)");
 
 class INImx
@@ -74,7 +71,6 @@ class INImx
         $msg .= "P_MID=".$this->id_merchant."&";
         $msg .= "P_TID=".$this->tid."&";
         $msg .= "P_REQ_URL=".$this->req_url."&";
-        $this->m_serviceurl = PAY_URL;
         $this->connectURL($msg);
 	}
 
@@ -82,16 +78,20 @@ class INImx
 
 	function connectURL($msg)
 	{
-		$httpclient = new HttpClient("true", HOST_IP);
+              $explode_data = explode('/', $this->req_url);
+              $host = $explode_data[2];
+              $path = "/" . $explode_data[3] . "/" . $explode_data[4];
+
+		$httpclient = new HttpClient("true", $host);
 
 		$this->printLog("Start INImx_APPL");
 
-		$this->printLog("Start HTTP Connect:".HOST_IP.$this->m_serviceurl);
+		$this->printLog("Start HTTP Connect:".$host.$path);
 
 		if($httpclient->HttpConnect())
    	{
 			$this->printLog("HTTP CONNECTION SUCCESS");
-     	if($httpclient->HttpRequest($this->m_serviceurl, $msg))
+     	if($httpclient->HttpRequest($path, $msg))
 			{
 				$this->printLog("RECV REQUEST:".trim($httpclient->getBody()));
        	// ���� �� �Ľ�

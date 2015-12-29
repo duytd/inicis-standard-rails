@@ -1,6 +1,7 @@
 namespace :inicis do
   task install: :environment do
-    inicis_payment = InicisPayment.find_or_create_by name: "INICIS Payment", key_required: true
+    inicis_payment = InicisPayment.find_or_create_by name: "INICIS Payment",
+      key_required: true, mobile_submethods: "card|vbank|directbank"
 
     inicis_payment.payment_method_options.create([
       {

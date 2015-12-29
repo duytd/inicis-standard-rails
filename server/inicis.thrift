@@ -24,4 +24,7 @@ service Inicis {
   string makePaymentAproveSignature(1:string authToken, 2:string timestamp)
   string makeHash(1:string signKey)
   string getAuthenticationResult(1:map<string,string> data, 2:string url)
+  string getMobileAuthenticationResult(1:string inipayhome, 2:string mid, 3:string p_rmesg1, 4:string p_tid, 5:string p_status, 6:string p_req_url, 7:string p_noti)
+  string aes256_cbc_encrypt(1:string key, 2:string data, 3:string iv)
+  string aes256_cbc_decrypt(1:string key, 2:string data, 3:string iv)
 }

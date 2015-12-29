@@ -2,13 +2,13 @@ PATH
   remote: .
   specs:
     inicis-standard-rails (0.1.0)
+      thrift
 
 GEM
   remote: http://rubygems.org/
   specs:
     diff-lcs (1.2.5)
     rake (10.4.2)
-    rjb (1.5.4)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -22,6 +22,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    thrift (0.9.3.0)
 
 PLATFORMS
   ruby
@@ -30,8 +31,8 @@ DEPENDENCIES
   bundler (~> 1.10)
   inicis-standard-rails!
   rake (~> 10.0)
-  rjb
   rspec
+  thrift
 
 BUNDLED WITH
    1.10.5

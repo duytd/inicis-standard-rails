@@ -1,0 +1,62 @@
+<div id="inipayment">
+    <div class="paymentform">
+      <div id="connecting" class="connecting">
+        <strong><%= "Establishing secured connection, please wait" %></strong>
+        <%= image_tag image_url("inicis_standard/ajax-loader.gif") %>
+      </div>
+
+    <%= form_tag "#", {name: "inipay_mobi", id: "inipayMobiForm"} do %>
+        <%= hidden_field_tag "P_UNAME", @request_payload.buyer_name %>
+        <%= hidden_field_tag "P_EMAIL", @request_payload.buyer_email %>
+        <%= hidden_field_tag "P_MOBILE", @request_payload.buyer_phone %>
+        <%= hidden_field_tag "currency", @request_payload.currency %>
+        <%= hidden_field_tag "P_OID", @request_payload.order_id %>
+        <%= hidden_field_tag "P_GOODS", @request_payload.goods_name %>
+        <%= hidden_field_tag "P_MID", @request_payload.merchant_id %>
+        <%= hidden_field_tag "P_AMT", @request_payload.price %>
+        <%= hidden_field_tag "P_NOTI", @request_payload.notification %>
+        <%= hidden_field_tag "P_NEXT_URL", mobile_transaction_next_url %>
+        <%= hidden_field_tag "P_NOTI_URL", mobile_transaction_noti_url %>
+        <%= hidden_field_tag "submethod", @request_payload.submethod %>
+        <%= hidden_field_tag "P_RETURN_URL", mobile_transaction_callback_url %>
+        <%= hidden_field_tag "P_CANCEL_URL", mobile_transaction_cancel_url %>
+        <%= hidden_field_tag "P_HPP_METHOD", 1 %>
+        <%= hidden_field_tag "P_APP_BASE", "" %>
+        <%= hidden_field_tag "P_RESERVED", "vbank_receipt=Y&ismart_use_sign=Y&extension_enable=Y&block_isp=Y&twotrs_isp=Y&twotrs_isp_noti=N&apprun_check=Y" %>
+      <% end %>
+    </div>
+</div>
+
+<script type="text/javascript">
+    setTimeout(function() {
+        secureStart();
+    }, 3500);
+
+    function secureStart() {
+        document.getElementById('connecting').style.display = "none";
+        on_web();
+    }
+
+    function on_web() {
+        var order_form = document.inipay_mobi;
+        var submethod = order_form.submethod.value;
+
+        if (submethod == "card") {
+            submethod = "wcard";
+        }
+        else if (submethod == "vbank") {
+            submethod = "vbank";
+        }
+        else {
+            submethod = "bank";
+        }
+
+        if (submethod == "bank")
+            order_form.P_APP_BASE.value = "ON";
+
+        order_form.target = "BTPG_WALLET";
+        order_form.target = "_self";
+        order_form.action = "https://mobile.inicis.com/smart/" + submethod + "/";
+        order_form.submit();
+    }
+</script>
