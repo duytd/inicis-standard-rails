@@ -7,7 +7,7 @@ Inicis::Standard::Rails::Engine.routes.draw do
   get "transaction/failure", to: "transaction#failure", as: "transaction_failure"
 
   get "mobile/transaction/pay", to: "mobile/transaction#pay", as: "mobile_transaction_pay"
-  post "mobile/transaction/callback", to: "mobile/transaction#callback", as: "mobile_transaction_callback"
+  get "mobile/transaction/callback", to: "mobile/transaction#callback", as: "mobile_transaction_callback"
   post "mobile/transaction/next", to: "mobile/transaction#next", as: "mobile_transaction_next"
   post "mobile/transaction/noti", to: "mobile/transaction#noti", as: "mobile_transaction_noti"
   post "mobile/transaction/cancel", to: "mobile/transaction#cancel", as: "mobile_transaction_cancel"

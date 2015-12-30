@@ -32,7 +32,8 @@ module Inicis
           @accept_method = params[:accept_method]
           @pay_view_type = params[:pay_view_type]
           @submethod = params[:submethod]
-          @notification = Inicis::Standard::Rails::Payload.encrypt_notification @order_id, Inicis::Standard::Rails::Payload.noti_hash
+          @notification = Inicis::Standard::Rails::Payload.encrypt_notification @order_id,
+            Inicis::Standard::Rails::Payload.noti_hash("#{@merchant_id}|#{@order_id}|#{@price}|#{@buyer_email}||||||")
         end
 
         def self.encrypt_notification data, hash
@@ -50,8 +51,8 @@ module Inicis
             data, Inicis::Standard::Rails.configuration.crypto_iv
         end
 
-        def self.noti_hash
-          Digest::SHA512.hexdigest "#{@merchant_id}|#{@order_id}|#{@price}|#{@buyer_email}||||||"
+        def self.noti_hash string
+          Digest::SHA512.hexdigest string
         end
 
         def self.crypto function_name, key, data, iv

@@ -1,5 +1,7 @@
 require "inicis/standard/rails/payment"
 require "inicis/standard/rails/authorization"
+require "rubygems"
+require "browser"
 
 module Inicis
   module Standard
@@ -7,6 +9,7 @@ module Inicis
       class TransactionController < Inicis::Standard::Rails.configuration.parent_klass
         protect_from_forgery with: :null_session
         before_action :load_logger
+        before_action :detect_browser, only: :pay
 
         include InicisHelper
 
@@ -71,13 +74,14 @@ module Inicis
                   total: authorize_data["TotPrice"]
                 }
 
+                order.change_status "processing"
                 order.payment.update_attributes extra_data: extra_data.to_json
               else
                 order.payment.change_state "paid"
                 order.change_status "processed"
               end
 
-              redirect_to main_app.customer_thank_you_path
+              redirect_to main_app.customer_success_path
             else
               render :failure
             end
@@ -122,6 +126,7 @@ module Inicis
 
               order.change_status "processed"
               order.update_attributes transaction_number: no_tid, state: "paid"
+              # Add payment note
               @logger.info "Completed Virtual Bank payment"
               render plain: "OK" and return
             else
@@ -141,6 +146,12 @@ module Inicis
         private
         def load_logger
           @logger ||= Logger.new "#{::Rails.root}/log/inicis/pc.log"
+        end
+
+        def detect_browser
+          if browser.mobile?
+            redirect_to mobile_transaction_pay_path
+          end
         end
       end
     end

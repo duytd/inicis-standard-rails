@@ -2,11 +2,13 @@ PATH
   remote: .
   specs:
     inicis-standard-rails (0.1.0)
+      browser
       thrift
 
 GEM
   remote: http://rubygems.org/
   specs:
+    browser (1.0.1)
     diff-lcs (1.2.5)
     rake (10.4.2)
     rspec (3.4.0)
@@ -28,6 +30,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  browser
   bundler (~> 1.10)
   inicis-standard-rails!
   rake (~> 10.0)

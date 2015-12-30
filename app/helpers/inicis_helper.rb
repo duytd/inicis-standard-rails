@@ -5,9 +5,9 @@ module InicisHelper
     @inicis_order ||= {
       id: order.id,
       goods_name: order.order_products.inject(""){|str, x| str + x.product.name + ","},
-      buyer_name: order.shipping_address.first_name + order.shipping_address.last_name.to_s,
-      buyer_email: order.shipping_address.email,
-      buyer_phone: order.shipping_address.phone_number,
+      buyer_name: order.billing_address.first_name + order.billing_address.last_name.to_s,
+      buyer_email: order.billing_address.email,
+      buyer_phone: order.billing_address.phone_number,
       price: order.total,
       submethod: order.payment.submethod
     }
