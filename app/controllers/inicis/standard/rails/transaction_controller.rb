@@ -10,6 +10,7 @@ module Inicis
         protect_from_forgery with: :null_session
         before_action :load_logger
         before_action :detect_browser, only: :pay
+        before_action :validate_order!, only: :pay
 
         include InicisHelper
 
@@ -144,6 +145,12 @@ module Inicis
         end
 
         private
+        def validate_order!
+          unless inicis_order
+            render text: "access_denied", status: :unauthorized
+          end
+        end
+
         def load_logger
           @logger ||= Logger.new "#{::Rails.root}/log/inicis/pc.log"
         end
