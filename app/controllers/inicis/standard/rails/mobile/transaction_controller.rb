@@ -67,11 +67,11 @@ module Inicis
                     total: authorize_data["m_resultprice"]
                   }
 
-                  order.change_status "processing"
-                  order.payment.update_attributes extra_data: extra_data.to_json
+                  order.payment.save_extra_data extra_data.to_json
+                  order.processing!
                 else
-                  order.payment.change_state "paid"
-                  order.change_status "processed"
+                  order.payment.paid!
+                  order.processed!
                 end
 
                 redirect_to main_app.customer_success_path
@@ -119,9 +119,10 @@ module Inicis
                       render plain: "FAIL_M14" and return
                     end
 
-                    order.change_status "processed"
-                    order.update_attributes transaction_number: params[:P_TID], state: "paid"
-                    # Add payment note
+                    order.payment.paid!
+                    order.payment.save_transaction_number params[:P_TID]
+                    order.processed!
+
                     @logger.info "Completed Virtual Bank payment"
                     render plain: "OK" and return
                   else
@@ -156,9 +157,10 @@ module Inicis
                     render plain: "FAIL" and return
                   end
 
-                  order.change_status "processed"
-                  order.payment.update_attributes transaction_number: params[:P_TID], state: "paid"
-                  # Add payment note
+                  order.payment.save_transaction_number params[:P_TID]
+                  order.payment.paid!
+                  order.processed!
+
                   @logger.info "Completed mobile payment via #{params[:P_TYPE]}"
                   render plain: "OK" and return
                 else

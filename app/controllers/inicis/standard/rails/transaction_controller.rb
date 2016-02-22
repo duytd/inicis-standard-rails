@@ -12,11 +12,13 @@ module Inicis
         before_action :detect_browser, only: :pay
         before_action :validate_order!, only: :pay
 
+        layout false
+
         include InicisHelper
 
         def pay
           payment_method_shop = current_shop.payment_method_shops.find_by_payment_method_id InicisPayment.first.id
-          inipayhome = File.dirname payment_method_shop.key.url
+          inipayhome = File.dirname(payment_method_shop.key.url) if payment_method_shop.key
           sign_key = payment_method_shop.load_option "sign_key"
           merchant_id = payment_method_shop.load_option "merchant_id"
           gopay_method = payment_method_shop.load_option "gopay_method"
@@ -75,11 +77,11 @@ module Inicis
                   total: authorize_data["TotPrice"]
                 }
 
-                order.change_status "processing"
-                order.payment.update_attributes extra_data: extra_data.to_json
+                order.payment.save_extra_data extra_data.to_json
+                order.processing!
               else
-                order.payment.change_state "paid"
-                order.change_status "processed"
+                order.payment.paid!
+                order.processed!
               end
 
               redirect_to main_app.customer_success_path
@@ -125,9 +127,10 @@ module Inicis
                 render plain: "FAIL_14" and return
               end
 
-              order.change_status "processed"
-              order.update_attributes transaction_number: no_tid, state: "paid"
-              # Add payment note
+              order.payment.save_transaction_number no_tid
+              order.payment.paid!
+              order.processed!
+
               @logger.info "Completed Virtual Bank payment"
               render plain: "OK" and return
             else

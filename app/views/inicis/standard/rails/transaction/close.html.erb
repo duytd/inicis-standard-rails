@@ -1,7 +1,5 @@
-<% content_for :inicis_javascript do %>
-  <% if Rails.env.development? %>
-    <%= javascript_include_tag "inicis_standard/inicis_standard_close" %>
-  <% else %>
-    <%= javascript_include_tag "https://stdpay.inicis.com/stdjs/INIStdPay_close.js" %>
-  <% end %>
+<% if Rails.env.development? %>
+  <%= javascript_include_tag "inicis_standard/inicis_standard_close" %>
+<% else %>
+  <%= javascript_include_tag "https://stdpay.inicis.com/stdjs/INIStdPay_close.js" %>
 <% end %>

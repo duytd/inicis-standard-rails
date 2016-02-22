@@ -1,49 +1,30 @@
-<% content_for :inicis_javascript do %>
-  <% if Rails.env.development? %>
-    <%= javascript_include_tag "inicis_standard/inicis_standard" %>
-  <% else %>
-    <%= javascript_include_tag "https://stdpay.inicis.com/stdjs/INIStdPay.js" %>
-  <% end %>
+<% if Rails.env.development? %>
+  <%= javascript_include_tag "inicis_standard/inicis_standard" %>
+<% else %>
+  <%= javascript_include_tag "https://stdpay.inicis.com/stdjs/INIStdPay.js" %>
 <% end %>
 
-<div id="inipayment">
-    <div class="paymentheader">
-        <h1><%= "Payment for Order: #{@request_payload.order_id} "%></h1>
-    </div>
-
-    <div class="paymentform">
-      <div class="connecting">
-        <strong><%= "Establishing secured connection, please wait" %></strong>
-        <%= image_tag image_url("inicis_standard/time.gif") %>
-      </div>
-
-      <%= form_tag "#", {name: "inipay", id: "inipayForm"} do %>
-        <%= hidden_field_tag "version", "1.0" %>
-        <%= hidden_field_tag "oid", @request_payload.order_id %>
-        <%= hidden_field_tag "mid", @request_payload.merchant_id %>
-        <%= hidden_field_tag "signature", @request_payload.signature %>
-        <%= hidden_field_tag "mKey", @request_payload.merchant_key %>
-        <%= hidden_field_tag "timestamp", @request_payload.timestamp %>
-        <%= hidden_field_tag "buyername", @request_payload.buyer_name %>
-        <%= hidden_field_tag "buyeremail", @request_payload.buyer_email %>
-        <%= hidden_field_tag "buyertel", @request_payload.buyer_phone %>
-        <%= hidden_field_tag "goodsname", @request_payload.goods_name %>
-        <%= hidden_field_tag "currency", @request_payload.currency %>
-        <%= hidden_field_tag "price", @request_payload.price %>
-        <%= hidden_field_tag "gopaymethod", @request_payload.gopay_method%>
-        <%= hidden_field_tag "acceptmethod", @request_payload.accept_method%>
-        <%= hidden_field_tag "returnUrl", transaction_callback_url %>
-        <%= hidden_field_tag "popupUrl", transaction_popup_url %>
-        <%= hidden_field_tag "closeUrl", transaction_close_url %>
-        <%= hidden_field_tag "payViewType", @request_payload.pay_view_type %>
-      <% end %>
-    </div>
-
-    <div class="paymentfooter"></div>
-</div>
+<%= form_tag "#", {name: "inipay", id: "inipayForm"} do %>
+  <%= hidden_field_tag "version", "1.0" %>
+  <%= hidden_field_tag "oid", @request_payload.order_id %>
+  <%= hidden_field_tag "mid", @request_payload.merchant_id %>
+  <%= hidden_field_tag "signature", @request_payload.signature %>
+  <%= hidden_field_tag "mKey", @request_payload.merchant_key %>
+  <%= hidden_field_tag "timestamp", @request_payload.timestamp %>
+  <%= hidden_field_tag "buyername", @request_payload.buyer_name %>
+  <%= hidden_field_tag "buyeremail", @request_payload.buyer_email %>
+  <%= hidden_field_tag "buyertel", @request_payload.buyer_phone %>
+  <%= hidden_field_tag "goodsname", @request_payload.goods_name %>
+  <%= hidden_field_tag "currency", @request_payload.currency %>
+  <%= hidden_field_tag "price", @request_payload.price %>
+  <%= hidden_field_tag "gopaymethod", @request_payload.gopay_method%>
+  <%= hidden_field_tag "acceptmethod", @request_payload.accept_method%>
+  <%= hidden_field_tag "returnUrl", transaction_callback_url %>
+  <%= hidden_field_tag "popupUrl", transaction_popup_url %>
+  <%= hidden_field_tag "closeUrl", transaction_close_url %>
+  <%= hidden_field_tag "payViewType", @request_payload.pay_view_type %>
+<% end %>
 
 <script type="text/javascript">
-  setTimeout(function() {
-    INIStdPay.pay('inipayForm');
-  }, 3500)
+  INIStdPay.pay('inipayForm');
 </script>
