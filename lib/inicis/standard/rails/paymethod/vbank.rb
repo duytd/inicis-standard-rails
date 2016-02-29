@@ -7,7 +7,7 @@ module Inicis
             @data = options[:data]
           end
 
-          def transaction_info
+          def transaction_detail
             [{
               label: I18n.t("inicis.methods.vbank.account_number"),
               value: @data["vact_num"]

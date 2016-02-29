@@ -84,7 +84,9 @@ module Inicis
                 order.processed!
               end
 
-              redirect_to main_app.customer_success_path
+              clear_order
+
+              redirect_to main_app.customer_success_path oid: order.id
             else
               render :failure
             end

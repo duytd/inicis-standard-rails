@@ -27,7 +27,8 @@ module Inicis
           end
 
           def callback
-            redirect_to main_app.customer_success_path
+            clear_order
+            redirect_to main_app.customer_success_path oid: order.id
           end
 
           def next
@@ -74,7 +75,8 @@ module Inicis
                   order.processed!
                 end
 
-                redirect_to main_app.customer_success_path
+                clear_order
+                redirect_to main_app.customer_success_path oid: order.id
               else
                 render "inicis/transaction/failure"
               end
