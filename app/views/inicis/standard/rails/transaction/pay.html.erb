@@ -1,8 +1,4 @@
-<% if Rails.env.development? %>
-  <%= javascript_include_tag "inicis_standard/inicis_standard" %>
-<% else %>
-  <%= javascript_include_tag "https://stdpay.inicis.com/stdjs/INIStdPay.js" %>
-<% end %>
+<%= javascript_include_tag "inicis_standard/inicis_standard" %>
 
 <%= form_tag "#", {name: "inipay", id: "inipayForm"} do %>
   <%= hidden_field_tag "version", "1.0" %>
