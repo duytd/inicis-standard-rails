@@ -1,2 +1,14 @@
 en:
   inicis:
+    failure: "Oops! Sorry, there was a problem processing payment. Please try again"
+    methods:
+      vbank:
+        note: "Please complete your purchase by making a deposit to the below bank account within 24 hours. Your order will be confirmed immediately after the payment has been made"
+        account_number: "Account Number"
+        bank_name: "Bank Name"
+        account_holder_name: "Account Holder Name"
+        sender_name: "Sender Name"
+        amount: "Amount"
+        wire_transfer_date: "Wire Transfer Date"
+        wire_transfer_time: "Wire Transfer Time"
+

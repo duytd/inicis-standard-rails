@@ -2,6 +2,7 @@ require "inicis/standard/rails/payment"
 require "inicis/standard/rails/authorization"
 require "rubygems"
 require "browser"
+require "iconv"
 
 module Inicis
   module Standard
@@ -28,7 +29,7 @@ module Inicis
 
           def callback
             clear_order
-            redirect_to main_app.customer_success_path oid: order.id
+            redirect_to main_app.customer_success_path oid: inicis_order.id
           end
 
           def next
@@ -55,6 +56,7 @@ module Inicis
 
               if authorize_data
                 order = Order.find authorize_data["m_moid"]
+                order.payment.save_transaction submethod: authorize_data["m_payMethod"].downcase
 
                 if authorize_data["m_payMethod"].downcase == "vbank"
                   extra_data = {
@@ -68,7 +70,7 @@ module Inicis
                     total: authorize_data["m_resultprice"]
                   }
 
-                  order.payment.save_extra_data extra_data.to_json
+                  order.payment.save_transaction extra_data: extra_data.to_json
                   order.processing!
                 else
                   order.payment.paid!
@@ -78,11 +80,13 @@ module Inicis
                 clear_order
                 redirect_to main_app.customer_success_path oid: order.id
               else
-                render "inicis/transaction/failure"
+                @error = Iconv.iconv "UTF-8", "euc-kr", "Code: #{params[:P_STATUS]}. Message: #{params[:P_RMESG1]}"
+                render "inicis/standard/rails/transaction/failure"
               end
             else
-              @logger.debug "Failed to make payment request. Code: #{params[:P_STATUS]}. Message: #{params[:P_RMESG1]}"
-              render "inicis/transaction/failure"
+              @error = Iconv.iconv "UTF-8", "euc-kr", "Code: #{params[:P_STATUS]}. Message: #{params[:P_RMESG1]}"
+              @logger.debug "Failed to make payment request. #{@error}"
+              render "inicis/standard/rails/transaction/failure"
             end
           end
 
@@ -122,7 +126,7 @@ module Inicis
                     end
 
                     order.payment.paid!
-                    order.payment.save_transaction_number params[:P_TID]
+                    order.payment.save_transaction transaction_number: params[:P_TID]
                     order.processed!
 
                     @logger.info "Completed Virtual Bank payment"
@@ -185,7 +189,7 @@ module Inicis
           end
 
           def detect_browser
-            unless browser.mobile?
+            unless browser.device.mobile?
               redirect_to transaction_pay_path
             end
           end

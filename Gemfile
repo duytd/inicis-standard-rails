@@ -3,3 +3,4 @@ gemspec
 
 gem "thrift"
 gem "browser"
+gem "iconv"

@@ -64,6 +64,7 @@ module Inicis
 
             if authorize_data
               order = Order.find params[:orderNumber]
+              order.payment.save_transaction submethod: authorize_data["payMethod"].downcase
 
               if authorize_data["payMethod"].downcase == "vbank"
                 extra_data = {
@@ -77,7 +78,7 @@ module Inicis
                   total: authorize_data["TotPrice"]
                 }
 
-                order.payment.save_extra_data extra_data.to_json
+                order.payment.save_transaction extra_data: extra_data.to_json
                 order.processing!
               else
                 order.payment.paid!
@@ -88,10 +89,12 @@ module Inicis
 
               redirect_to main_app.customer_success_path oid: order.id
             else
+              @error = Iconv.iconv "UTF-8", "euc-kr", "Code: #{params[:resultCode]}. Message: #{params[:resultMsg]}"
               render :failure
             end
           else
-            @logger.debug "Failed to make payment request. Code: #{params[:resultCode]}. Message: #{params[:resultMsg]}"
+            @error = Iconv.iconv "UTF-8", "euc-kr", "Code: #{params[:resultCode]}. Message: #{params[:resultMsg]}"
+            @logger.debug "Failed to make payment request. #{@error}"
             render :failure
           end
         end
@@ -129,7 +132,7 @@ module Inicis
                 render plain: "FAIL_14" and return
               end
 
-              order.payment.save_transaction_number no_tid
+              order.payment.save_transaction transaction_number: no_tid
               order.payment.paid!
               order.processed!
 
@@ -161,7 +164,7 @@ module Inicis
         end
 
         def detect_browser
-          if browser.mobile?
+          if browser.device.mobile?
             redirect_to mobile_transaction_pay_path
           end
         end
