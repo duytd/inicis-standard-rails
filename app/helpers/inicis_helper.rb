@@ -14,9 +14,9 @@ module InicisHelper
       when "ShopstoryTicket::Booking"
         goods_name = order.ticket_bookings.inject(""){|str, x| str + x.ticket.name + ","}
       when "ProductOrder"
-        goods_name = order.order_products.inject(""){|str, x| str + x.product.name + ","}
+        goods_name = order.order_products.inject(""){|str, x| str + x.variation.name + ","}
       end
-     
+
       @inicis_order ||= {
         id: order.id,
         goods_name: goods_name,
