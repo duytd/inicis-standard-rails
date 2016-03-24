@@ -2,6 +2,7 @@ require "inicis/standard/rails/payment"
 require "inicis/standard/rails/authorization"
 require "rubygems"
 require "browser"
+require "iconv"
 
 module Inicis
   module Standard
@@ -89,11 +90,11 @@ module Inicis
 
               redirect_to main_app.customer_success_path oid: order.id
             else
-              @error = Iconv.iconv "UTF-8", "euc-kr", "Code: #{params[:resultCode]}. Message: #{params[:resultMsg]}"
+              @error = Iconv.iconv "UTF-8//IGNORE", "euc-kr", "Code: #{params[:resultCode]}. Message: #{params[:resultMsg]}"
               render :failure
             end
           else
-            @error = Iconv.iconv "UTF-8", "euc-kr", "Code: #{params[:resultCode]}. Message: #{params[:resultMsg]}"
+            @error = Iconv.iconv "UTF-8//IGNORE", "euc-kr", "Code: #{params[:resultCode]}. Message: #{params[:resultMsg]}"
             @logger.debug "Failed to make payment request. #{@error}"
             render :failure
           end

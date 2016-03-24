@@ -80,11 +80,11 @@ module Inicis
                 clear_order
                 redirect_to main_app.customer_success_path oid: order.id
               else
-                @error = Iconv.iconv "UTF-8", "euc-kr", "Code: #{params[:P_STATUS]}. Message: #{params[:P_RMESG1]}"
+                @error = Iconv.iconv "UTF-8//IGNORE", "euc-kr", "Code: #{params[:P_STATUS]}. Message: #{params[:P_RMESG1]}"
                 render "inicis/standard/rails/transaction/failure"
               end
             else
-              @error = Iconv.iconv "UTF-8", "euc-kr", "Code: #{params[:P_STATUS]}. Message: #{params[:P_RMESG1]}"
+              @error = Iconv.iconv "UTF-8//IGNORE", "euc-kr", "Code: #{params[:P_STATUS]}. Message: #{params[:P_RMESG1]}"
               @logger.debug "Failed to make payment request. #{@error}"
               render "inicis/standard/rails/transaction/failure"
             end
