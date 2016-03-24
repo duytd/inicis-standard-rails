@@ -22,9 +22,22 @@ module Inicis
           inipayhome = File.dirname(payment_method_shop.key.url) if payment_method_shop.key
           sign_key = payment_method_shop.load_option "sign_key"
           merchant_id = payment_method_shop.load_option "merchant_id"
-          gopay_method = payment_method_shop.load_option "gopay_method"
           accept_method = payment_method_shop.load_option "accept_method"
           pay_view_type = payment_method_shop.load_option "pay_view_type"
+          quotabase = payment_method_shop.load_option "quotabase"
+
+          gopay_method = case inicis_order[:submethod]
+                                                when "card"
+                                                  "Card"
+                                                when "vbank"
+                                                  "VBank"
+                                                when "directbank"
+                                                  "DirectBank"
+                                                else
+                                                  "Card:DirectBank:VBank"
+                                                end
+
+          accept_method.gsub!("useescrow" , "") if inicis_order[:submethod] == "card"
 
           inicis_payment = Inicis::Standard::Rails::Payment.new(
             order: inicis_order,
@@ -33,7 +46,8 @@ module Inicis
             merchant_id: merchant_id,
             gopay_method: gopay_method,
             accept_method: accept_method,
-            pay_view_type: pay_view_type
+            pay_view_type: pay_view_type,
+            quotabase: quotabase
           )
 
           @request_payload = inicis_payment.generate_payload

@@ -14,7 +14,7 @@ module Inicis
 
         attr_reader :merchant_id, :signature, :order_id, :goods_name, :price, :currency, :timestamp,
           :merchant_key, :buyer_name, :buyer_email, :buyer_phone, :gopay_method, :accept_method,
-          :pay_view_type, :notification, :submethod
+          :pay_view_type, :notification, :submethod, :quotabase
 
         def initialize params={}
           @merchant_id = params[:merchant_id]
@@ -31,6 +31,7 @@ module Inicis
           @gopay_method = params[:gopay_method]
           @accept_method = params[:accept_method]
           @pay_view_type = params[:pay_view_type]
+          @quotabase = params[:quotabase]
           @submethod = params[:submethod]
           @notification = Inicis::Standard::Rails::Payload.encrypt_notification @order_id,
             Inicis::Standard::Rails::Payload.noti_hash("#{@merchant_id}|#{@order_id}|#{@price}|#{@buyer_email}||||||")

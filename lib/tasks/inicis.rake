@@ -1,7 +1,7 @@
 namespace :inicis do
   task install: :environment do
     inicis_payment = InicisPayment.find_or_create_by name: "INICIS Payment",
-      key_required: true, mobile_submethods: "card|vbank|directbank"
+      key_required: true, mobile_submethods: "card|vbank|directbank", desktop_submethods: "card|vbank|directbank"
 
     inicis_payment.payment_method_options.create([
       {
@@ -25,20 +25,20 @@ namespace :inicis do
         option_type: "text"
       },
       {
-        name: "force_krw_converting",
-        title: "Force KRW Converting",
-        option_type: "boolean"
-      },
-      {
         name: "gopay_method",
         title: "gopaymethod",
-        default_value: "Card:DirectBank:VBank:useescrow",
+        default_value: "Card:DirectBank:VBank",
+        option_type: "text"
+      },
+      {
+        name: "quotabase",
+        title: "Installment",
         option_type: "text"
       },
       {
         name: "accept_method",
         title: "acceptmethod",
-        default_value: "HPP(1):Card(0):OCB:receipt:cardpoint",
+        default_value: "HPP(1):Card(0):OCB:receipt:cardpoint:useescrow",
         option_type: "text"
       },
       {

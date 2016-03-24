@@ -18,6 +18,7 @@ module Inicis
             @accept_method = options[:accept_method]
             @gopay_method = options[:gopay_method]
             @pay_view_type = options[:pay_view_type]
+            @quotabase = options[:quotabase]
         end
 
         def generate_payload mobile=false
@@ -51,6 +52,7 @@ module Inicis
               buyer_phone: @order[:buyer_phone],
               gopay_method: @gopay_method,
               accept_method: @accept_method,
+              quotabase: @quotabase,
               pay_view_type: @pay_view_type
             )
           else

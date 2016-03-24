@@ -13,8 +13,9 @@
   <%= hidden_field_tag "goodsname", @request_payload.goods_name %>
   <%= hidden_field_tag "currency", @request_payload.currency %>
   <%= hidden_field_tag "price", @request_payload.price %>
-  <%= hidden_field_tag "gopaymethod", @request_payload.gopay_method%>
-  <%= hidden_field_tag "acceptmethod", @request_payload.accept_method%>
+  <%= hidden_field_tag "gopaymethod", @request_payload.gopay_method %>
+  <%= hidden_field_tag "acceptmethod", @request_payload.accept_method %>
+  <%= hidden_field_tag "quotabase", @request_payload.quotabase %>
   <%= hidden_field_tag "returnUrl", transaction_callback_url %>
   <%= hidden_field_tag "popupUrl", transaction_popup_url %>
   <%= hidden_field_tag "closeUrl", transaction_close_url %>
