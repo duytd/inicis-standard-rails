@@ -2,9 +2,9 @@ module InicisHelper
   def inicis_order
     order_token = case session[:order_type]
                   when "ticket"
-                    cookies[:to]
+                    cookies.signed[:booking_token]
                   else
-                    cookies[:po]
+                    cookies.signed[:order_token]
                   end
 
     order ||= Order.find_by_token order_token
@@ -14,7 +14,8 @@ module InicisHelper
       when "ShopstoryTicket::Booking"
         goods_name = order.ticket_bookings.inject(""){|str, x| str + x.ticket.name + ","}
       when "ProductOrder"
-        goods_name = order.order_products.inject(""){|str, x| str + x.variation.name + ","}
+        locale = order.locale || "ko"
+        goods_name = order.order_products.inject(""){|str, x| str + x.variation.send("name_#{locale}") + ","}
       end
 
       @inicis_order ||= {
