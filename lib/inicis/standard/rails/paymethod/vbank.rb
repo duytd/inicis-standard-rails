@@ -9,32 +9,41 @@ module Inicis
 
           def transaction_info
             [{
+              label: I18n.t("inicis.methods.common.paymethod"),
+              value: @data["payMethod"]
+            },
+            {
+              label: I18n.t("inicis.methods.vbank.note"),
+              value: I18n.t("inicis.methods.vbank.note_content"),
+              show_admin: false
+            },
+            {
               label: I18n.t("inicis.methods.vbank.account_number"),
-              value: @data["vact_num"]
+              value: @data["VACT_Num"]
             },
             {
               label: I18n.t("inicis.methods.vbank.bank_name"),
-              value: Vbank.bank_name(@data["vact_bank_code"])
+              value: Vbank.bank_name(@data["VACT_BankCode"])
             },
             {
               label: I18n.t("inicis.methods.vbank.account_holder_name"),
-              value: @data["vact_name"]
+              value: @data["VACT_Name"]
             },
             {
               label: I18n.t("inicis.methods.vbank.sender_name"),
-              value: @data["vact_input_name"]
+              value: @data["VACT_InputName"]
             },
             {
-              label: I18n.t("inicis.methods.vbank.amount"),
-              value: @data["total"]
+              label: I18n.t("inicis.methods.common.amount"),
+              value: @data["TotPrice"]
             },
             {
               label: I18n.t("inicis.methods.vbank.wire_transfer_date"),
-              value: @data["vact_date"]
+              value: @data["VACT_Date"]
             },
             {
               label: I18n.t("inicis.methods.vbank.wire_transfer_time"),
-              value: @data["vact_time"]
+              value: @data["VACT_Time"]
             }]
           end
 

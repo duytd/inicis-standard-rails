@@ -2,12 +2,26 @@ en:
   inicis:
     failure: "Oops! Sorry, there was a problem processing payment. Please try again"
     methods:
+      common:
+        amount: "Amount"
+        approval_time: "Approval Time"
+        paymethod: "Pay Method"
       vbank:
-        note: "Please complete your purchase by making a deposit to the below bank account within 24 hours. Your order will be confirmed immediately after the payment has been made"
+        note: "Note"
+        note_content: "Please complete your purchase by making a deposit to the below bank account within 24 hours. Your order will be confirmed immediately after the payment has been made"
         account_number: "Account Number"
         bank_name: "Bank Name"
         account_holder_name: "Account Holder Name"
         sender_name: "Sender Name"
-        amount: "Amount"
         wire_transfer_date: "Wire Transfer Date"
         wire_transfer_time: "Wire Transfer Time"
+      direct_bank:
+        bank_code: "Bank Code"
+        issuance_result_code: "Issuance Result Code"
+        issuance_type_code: "Issuance Type Code"
+      card:
+        card_number: "Card Number"
+        card_quota: "Card Quota"
+        card_interest: "Card Interest"
+        refund_possibility: "Partial Refund Possibility"
+

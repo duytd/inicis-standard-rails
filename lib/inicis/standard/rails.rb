@@ -1,4 +1,7 @@
 require "inicis/standard/rails/version"
+require "inicis/standard/rails/paymethod/card"
+require "inicis/standard/rails/paymethod/vbank"
+require "inicis/standard/rails/paymethod/direct_bank"
 require "inicis/standard/rails/configuration"
 
 module Inicis

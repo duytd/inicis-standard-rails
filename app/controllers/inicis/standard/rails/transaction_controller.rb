@@ -79,30 +79,16 @@ module Inicis
 
             if authorize_data
               order = Order.find params[:orderNumber]
-              order.payment.save_transaction submethod: authorize_data["payMethod"].downcase
+              order.payment.save_transaction submethod: authorize_data["payMethod"].downcase, extra_data: authorize_data.to_json
 
               if authorize_data["payMethod"].downcase == "vbank"
-                extra_data = {
-                  oid: authorize_data["MOID"],
-                  vact_bank_code: authorize_data["VACT_BankCode"],
-                  vact_name: authorize_data["VACT_Name"],
-                  vact_input_name: authorize_data["VACT_InputName"],
-                  vact_date: authorize_data["VACT_Date"],
-                  vact_time: authorize_data["VACT_Time"],
-                  vact_num: authorize_data["VACT_Num"],
-                  total: authorize_data["TotPrice"]
-                }
-
-                order.payment.save_transaction extra_data: extra_data.to_json
                 order.processing!
               else
                 order.payment.paid!
                 order.processed!
               end
 
-              clear_order
-
-              redirect_to main_app.customer_success_path oid: order.id
+              redirect_to main_app.customer_success_path
             else
               @error = Iconv.iconv "UTF-8//IGNORE", "euc-kr", "Code: #{params[:resultCode]}. Message: #{params[:resultMsg]}"
               render :failure
@@ -137,13 +123,13 @@ module Inicis
             payment_extra_data = JSON.parse order.payment.extra_data
 
             unless order.processed? && order.payment.paid?
-              if payment_extra_data["oid"] != no_oid
+              if payment_extra_data["MOID"] != no_oid
                 render plain: "FAIL_11" and return
-              elsif payment_extra_data["vact_bank_code"].to_i != cd_bank.to_i
+              elsif payment_extra_data["VACT_BankCode"].to_i != cd_bank.to_i
                 render plain: "FAIL_12" and return
-              elsif payment_extra_data["vact_num"] != no_vacct
+              elsif payment_extra_data["VACT_Num"] != no_vacct
                 render plain: "FAIL_13" and return
-              elsif payment_extra_data["total"].to_f != amt_input.to_f
+              elsif payment_extra_data["TotPrice"].to_f != amt_input.to_f
                 render plain: "FAIL_14" and return
               end
 

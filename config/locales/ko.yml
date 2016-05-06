@@ -2,12 +2,25 @@ ko:
   inicis:
     failure: "결제를 진행하는데 오류가 발생했습니다. 다시 시도해주세요."
     methods:
+      common:
+        amount: "입금 금액"
+        approval_time: "Approval Time"
+        paymethod: "Pay Method"
       vbank:
-        note: "24시간내에 아래 은행 계좌로 입금해주세요. 입금이 완료되는대로 주문이 완료됩니다."
+        note: "Note"
+        note_content: "24시간내에 아래 은행 계좌로 입금해주세요. 입금이 완료되는대로 주문이 완료됩니다."
         account_number: "입급 계좌"
         bank_name: "입금 은행"
         account_holder_name: "입금 계좌 이름"
         sender_name: "보내는 분 성함"
-        amount: "입금 금액"
         wire_transfer_date: "입금 기한"
         wire_transfer_time: "입금 기한"
+      direct_bank:
+        bank_code: "Bank Code"
+        issuance_result_code: "Issuance Result Code"
+        issuance_type_code: "Issuance Type Code"
+      card:
+        card_number: "Card Number"
+        card_quota: "Card Quota"
+        card_interest: "Card Interest"
+        refund_possibility: "Partial Refund Possibility"
