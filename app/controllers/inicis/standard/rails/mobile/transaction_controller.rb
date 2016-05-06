@@ -29,7 +29,7 @@ module Inicis
 
           def callback
             clear_order
-            redirect_to main_app.customer_success_path oid: inicis_order.id
+            redirect_to main_app.customer_success_path
           end
 
           def next
@@ -56,29 +56,38 @@ module Inicis
 
               if authorize_data
                 order = Order.find authorize_data["m_moid"]
-                order.payment.save_transaction submethod: authorize_data["m_payMethod"].downcase
+                extra_data = {
+                  payMethod: authorize_data["m_payMethod"],
+                  MOID: authorize_data["m_moid"],
+                  tid: authorize_data["m_tid"],
+                  VACT_BankCode: authorize_data["m_vcdbank"],
+                  VACT_Name: authorize_data["m_nmvacct"],
+                  VACT_Inputname: authorize_data["m_buyerName"],
+                  VACT_Date: authorize_data["m_dtinput"],
+                  VACT_Time: authorize_data["m_tminput"],
+                  VACT_Num: authorize_data["m_vacct"],
+                  TotPrice: authorize_data["m_resultprice"],
+                  applTime: authorize_data["m_pgAuthTime"],
+                  applDate: authorize_data["m_pgAuthDate"],
+                  CARD_Num: authorize_data["m_cardCode"],
+                  CARD_Quota: authorize_data["m_cardQuota"],
+                  CARD_PRTC_CODE: authorize_data["m_prtc"],
+                }
+
+                order.payment.save_transaction(
+                  submethod: authorize_data["m_payMethod"].downcase,
+                  extra_data: extra_data.to_json,
+                  transaction_number: authorize_data["tid"]
+                )
 
                 if authorize_data["m_payMethod"].downcase == "vbank"
-                  extra_data = {
-                    oid: authorize_data["m_moid"],
-                    vact_bank_code: authorize_data["m_vcdbank"],
-                    vact_name: authorize_data["m_nmvacct"],
-                    vact_input_name: authorize_data["m_buyerName"],
-                    vact_date: authorize_data["m_dtinput"],
-                    vact_time: authorize_data["m_tminput"],
-                    vact_num: authorize_data["m_vacct"],
-                    total: authorize_data["m_resultprice"]
-                  }
-
-                  order.payment.save_transaction extra_data: extra_data.to_json
                   order.processing!
                 else
                   order.payment.paid!
                   order.processed!
                 end
 
-                clear_order
-                redirect_to main_app.customer_success_path oid: order.id
+                redirect_to main_app.customer_success_path
               else
                 @error = Iconv.iconv "UTF-8//IGNORE", "euc-kr", "Code: #{params[:P_STATUS]}. Message: #{params[:P_RMESG1]}"
                 render "inicis/standard/rails/transaction/failure"

@@ -17,8 +17,8 @@ en:
         wire_transfer_time: "Wire Transfer Time"
       direct_bank:
         bank_code: "Bank Code"
-        issuance_result_code: "Issuance Result Code"
-        issuance_type_code: "Issuance Type Code"
+        result_code: "Cash Receipt Result Status"
+        type_code: "Cash Receipt Identification"
       card:
         card_number: "Card Number"
         card_quota: "Card Quota"

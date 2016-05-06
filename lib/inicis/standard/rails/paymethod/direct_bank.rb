@@ -13,11 +13,11 @@ module Inicis
               value: @data["payMethod"]
             },
             {
-              label: I18n.t("inicis.methods.direct_bank.issuance_result_code"),
-              value: Vbank.bank_name(@data["CSHR_ResultCode"])
+              label: I18n.t("inicis.methods.direct_bank.result_code"),
+              value: @data["CSHR_ResultCode"]
             },
             {
-              label: I18n.t("inicis.methods.direct_bank.issuance_type_code"),
+              label: I18n.t("inicis.methods.direct_bank.type_code"),
               value: @data["CSHR_Type"]
             },
             {

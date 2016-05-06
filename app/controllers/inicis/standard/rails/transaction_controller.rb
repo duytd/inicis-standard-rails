@@ -79,7 +79,11 @@ module Inicis
 
             if authorize_data
               order = Order.find params[:orderNumber]
-              order.payment.save_transaction submethod: authorize_data["payMethod"].downcase, extra_data: authorize_data.to_json
+              order.payment.save_transaction(
+                submethod: authorize_data["payMethod"].downcase,
+                extra_data: authorize_data.to_json,
+                transaction_number: authorize_data["tid"]
+              )
 
               if authorize_data["payMethod"].downcase == "vbank"
                 order.processing!
@@ -133,7 +137,6 @@ module Inicis
                 render plain: "FAIL_14" and return
               end
 
-              order.payment.save_transaction transaction_number: no_tid
               order.payment.paid!
               order.processed!
 

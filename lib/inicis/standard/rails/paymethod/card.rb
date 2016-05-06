@@ -22,7 +22,7 @@ module Inicis
             },
             {
               label: I18n.t("inicis.methods.card.card_quota"),
-              value: @data["CARD_quota"]
+              value: @data["CARD_Quota"]
             },
             {
               label: I18n.t("inicis.methods.card.refund_possibility"),

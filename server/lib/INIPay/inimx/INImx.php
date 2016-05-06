@@ -112,7 +112,6 @@ class INImx
 				$this->m_nextUrl  = $resultString['P_NEXT_URL'];
 				$this->m_notiUrl  = $resultString['P_NOTEURL'];
 
-
 				//�ſ�ī��
 				$this->m_pgAuthDate  = substr($resultString['P_AUTH_DT'],'0','8');
 				$this->m_pgAuthTime  = substr($resultString['P_AUTH_DT'],'8','6');
